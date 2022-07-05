@@ -1,8 +1,11 @@
-<?php namespace Msurguy\Honeypot;
+<?php
+
+namespace Msurguy\Honeypot;
 
 use Crypt;
 
-class Honeypot {
+class Honeypot
+{
 
     protected $disabled = false;
 
@@ -33,19 +36,19 @@ class Honeypot {
         // Encrypt the current time
         $honey_time_encrypted = $this->getEncryptedTime();
 
-        $html = '<div class="' . $honey_name . '_wrap" style="display:none;"><input name="' . $honey_name . '" type="text" value="" id="' . $honey_name . '"/><input name="' . $honey_time . '" type="text" value="' . $honey_time_encrypted . '"/></div>';
+        $html = '<div class="' . $honey_name . '_wrap" style="display:none;"><input name="' . $honey_name . '" type="text" value="" autocomplete="off" id="' . $honey_name . '"/><input name="' . $honey_time . '" type="text" autocomplete="off" value="' . $honey_time_encrypted . '"/></div>';
 
         return $html;
     }
 
     /**
-    * Validate honeypot is empty
-    *
-    * @param  string $attribute
-    * @param  mixed $value
-    * @param  array $parameters
-    * @return boolean
-    */
+     * Validate honeypot is empty
+     *
+     * @param  string $attribute
+     * @param  mixed $value
+     * @param  array $parameters
+     * @return boolean
+     */
     public function validateHoneypot($attribute, $value, $parameters)
     {
         if ($this->disabled) {
@@ -68,12 +71,12 @@ class Honeypot {
         if ($this->disabled) {
             return true;
         }
-        
+
         // Get the decrypted time
         $value = $this->decryptTime($value);
 
         // The current time should be greater than the time the form was built + the speed option
-        return ( is_numeric($value) && time() > ($value + $parameters[0]) );
+        return (is_numeric($value) && time() > ($value + $parameters[0]));
     }
 
     /**
@@ -95,13 +98,10 @@ class Honeypot {
     {
         // Laravel will throw an uncaught exception if the value is empty
         // We will try and catch it to make it easier on users.
-    	try {
+        try {
             return Crypt::decrypt($time);
-    	}
-    	catch (\Exception $exception)
-        {
+        } catch (\Exception $exception) {
             return null;
         }
     }
-
 }
